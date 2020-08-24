@@ -1,5 +1,6 @@
 package com.example.mynewsapp.ui
 
+import android.content.res.Configuration
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mynewsapp.R
@@ -53,14 +55,7 @@ class NewsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         mNewsCatalogList = view.findViewById(R.id.news_catalog)
-        mNewsCatalogList.layoutManager =
-            LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
-        mNewsCatalogList.addItemDecoration(
-            DividerItemDecoration(
-                view.context,
-                RecyclerView.VERTICAL
-            )
-        )
+        handleConfigChange(resources.configuration)
 
         mNewsViewModel.mObservableNewsCatalog.observe(
             viewLifecycleOwner,
@@ -74,4 +69,30 @@ class NewsFragment : Fragment() {
             })
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        handleConfigChange(newConfig)
+    }
+
+    private fun handleConfigChange(newConfig: Configuration) {
+        when (newConfig.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                mNewsCatalogList.layoutManager =
+                    GridLayoutManager(context, 2)
+            }
+            Configuration.ORIENTATION_PORTRAIT -> {
+                mNewsCatalogList.layoutManager =
+                    LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+//                mNewsCatalogList.addItemDecoration(
+//                    DividerItemDecoration(
+//                        context,
+//                        RecyclerView.VERTICAL
+//                    )
+//                )
+            }
+            else -> {
+                Log.w(TAG, "handleConfigChange unhandled orientation ${newConfig.orientation}")
+            }
+        }
+    }
 }
