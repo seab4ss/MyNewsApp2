@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.mynewsapp.R
 import com.example.mynewsapp.model.MediaCatalog
 import com.example.mynewsapp.model.NewsCatalog
@@ -28,6 +29,7 @@ class NewsFragment : Fragment() {
         fun newInstance() = NewsFragment()
     }
 
+    private lateinit var mNewsCatalogRefreshLayout: SwipeRefreshLayout
     private lateinit var mNewsCatalogList: RecyclerView
     private val mNewsViewModel: NewsViewModel by viewModels()
 //    // use View Binding instead of findViewById()
@@ -53,7 +55,8 @@ class NewsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        mNewsCatalogRefreshLayout = view.findViewById(R.id.news_catalog_container)
+        mNewsCatalogRefreshLayout.setOnRefreshListener { refreshNewsCatalog() }
         mNewsCatalogList = view.findViewById(R.id.news_catalog)
         handleConfigChange(resources.configuration)
 
@@ -66,6 +69,7 @@ class NewsFragment : Fragment() {
                     Log.d(TAG, "MediaCatalog observer onChanged ${catalog.articles.size}")
                     mNewsCatalogList.adapter = NewsAdapter(catalog.articles.toMutableList())
                 }
+                mNewsCatalogRefreshLayout.isRefreshing = false
             })
     }
 
@@ -94,5 +98,12 @@ class NewsFragment : Fragment() {
                 Log.w(TAG, "handleConfigChange unhandled orientation ${newConfig.orientation}")
             }
         }
+    }
+
+    private fun refreshNewsCatalog(){
+
+        // Signal SwipeRefreshLayout to start the progress indicator
+        //mMediaCatalogRefreshLayout.isRefreshing = true
+        mNewsViewModel.refreshNewsCatalog()
     }
 }

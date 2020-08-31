@@ -32,8 +32,6 @@ class NewsViewModel @ViewModelInject constructor(private val mRepo: NewsRepo) : 
     private fun fetchNewsCatalogFromServer() {
         // launch a coroutine in viewModelScope
         viewModelScope.launch {
-//            remoteApi.slowFetch()
-//            ...
             mObservableNewsCatalog.value = doFetchNewsCatalogFromServer()
         }
     }
@@ -44,6 +42,11 @@ class NewsViewModel @ViewModelInject constructor(private val mRepo: NewsRepo) : 
             Log.i(TAG, "doFetchNewsCatalogFromServer")
             mRepo.doLoadNewsCatalogFromServer()
         }
+    }
+
+    fun refreshNewsCatalog() {
+        Log.i(TAG, "refreshNewsCatalog")
+        fetchNewsCatalogFromServer()
     }
 
 
