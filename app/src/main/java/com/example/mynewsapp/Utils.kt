@@ -3,6 +3,7 @@ package com.example.mynewsapp
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 
 
 /**
@@ -11,6 +12,7 @@ import android.net.Uri
 
 class Utils {
     companion object {
+        const val TAG = "NewsUtils"
         fun openWebPage(context: Context, url: String) {
             val webPage: Uri = Uri.parse(url)
             val intent = Intent(Intent.ACTION_VIEW, webPage)
@@ -22,6 +24,8 @@ class Utils {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
+            } else {
+                Log.e(TAG, "openWebPage unable to resolve activity to handle uri $webPage")
             }
         }
     }
