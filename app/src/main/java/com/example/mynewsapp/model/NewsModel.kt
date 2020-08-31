@@ -21,18 +21,29 @@ class NewsViewModel @ViewModelInject constructor(private val mRepo: NewsRepo) : 
         const val TAG = "NewsViewModel"
     }
 
-    val mObservableNewsCatalog: MutableLiveData<NewsCatalog> = MutableLiveData()
+    //val mObservableNewsCatalog: MutableLiveData<NewsCatalog> = MutableLiveData()
 
     init {
-        fetchNewsCatalogFromServer()
+        //fetchNewsCatalogFromServer()
     }
 
+   // lazy loading of the news catalog
+    private val mLazyNewsCatalog by lazy {
+        val liveData = MutableLiveData<NewsCatalog>()
+        viewModelScope.launch {
+            liveData.value = doFetchNewsCatalogFromServer()
+        }
+
+        liveData
+    }
+
+    fun observableNewsCatalog(): LiveData<NewsCatalog> = mLazyNewsCatalog
 
     // Make a network request without blocking the UI thread
     private fun fetchNewsCatalogFromServer() {
         // launch a coroutine in viewModelScope
         viewModelScope.launch {
-            mObservableNewsCatalog.value = doFetchNewsCatalogFromServer()
+            mLazyNewsCatalog.value = doFetchNewsCatalogFromServer()
         }
     }
 

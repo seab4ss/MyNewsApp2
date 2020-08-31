@@ -60,7 +60,7 @@ class NewsFragment : Fragment() {
         mNewsCatalogList = view.findViewById(R.id.news_catalog)
         handleConfigChange(resources.configuration)
 
-        mNewsViewModel.mObservableNewsCatalog.observe(
+        mNewsViewModel.observableNewsCatalog().observe(
             viewLifecycleOwner,
             Observer<NewsCatalog> { catalog ->
                 if (catalog.articles.isNullOrEmpty()) {
