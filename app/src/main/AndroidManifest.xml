@@ -3,6 +3,8 @@
     package="com.example.mynewsapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- if app targets API 30 then need to include this permission to be able to launch browser via Action.VIEW intent -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
     <application
         android:name=".NewsApp"
         android:allowBackup="true"
